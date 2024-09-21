@@ -1,9 +1,8 @@
 "use client";
-import { Map as IMap, List as IList } from "immutable";
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
-import { useEffect, useRef, useState, FC } from "react";
-import Modal from "./Modal";
-import { GroupId, NodeData, NodeId } from "./nodes";
+import { useEffect, useRef, useState } from "react";
+import Modal from "@/components/Modal";
+import { type NodeData } from "@/types/GraphTypes";
 
 const GraphEvents = (props: { nodeData: NodeData[] }) => {
   const registerEvents = useRegisterEvents();
@@ -19,10 +18,10 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
     const graph = sigma.getGraph();
     const centerX = 1.25;
     const centerY = 1.25;
-    const gravityConstant = 0.0002; // Gravity towards center
-    const forceConstant = 0.00001; // Decreased repulsion strength
-    const maxDistance = 0.3; // maximum allowable distance between two connected nodes in the graph. When the distance between two nodes exceeds this value, the algorithm applies a stronger attractive force to pull the nodes closer together.
-    const friction = 0.2; // Friction factor (0 < friction < 1)
+    const gravityConstant = 0.0004;
+    const baseForceConstant = 0.0001;
+    const maxDistance = 0.3;
+    const friction = 0.05;
 
     // Initialize node positions and forces
     const nodes = graph.nodes().map((nodeId) => ({
@@ -31,7 +30,9 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
         x: graph.getNodeAttribute(nodeId, "x"),
         y: graph.getNodeAttribute(nodeId, "y"),
       },
-      force: { x: 0, y: 0 }, // Initialize force for each node
+      force: { x: 0, y: 0 },
+      connectionCount:
+        graph.neighbors(nodeId).length + graph.inNeighbors(nodeId).length, // Count connections
     }));
 
     // Apply gravity to all nodes
@@ -55,7 +56,10 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
         const distance = Math.sqrt(distanceSquared);
 
         if (distance > 0) {
-          const forceMagnitude = forceConstant / distanceSquared; // Calculate weaker repulsive force
+          // Calculate a force magnitude that increases with the connection counts
+          const forceMagnitude =
+            (baseForceConstant / distanceSquared) *
+            (nodes[i].connectionCount + nodes[j].connectionCount); // Scale by connection counts
           const force = {
             x: (dir.x / distance) * forceMagnitude,
             y: (dir.y / distance) * forceMagnitude,
@@ -83,17 +87,17 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
       const diff = distance - maxDistance;
 
       if (diff > 0) {
-        // If nodes are too far apart, apply a stronger force towards each other
         const force = {
-          x: (disX / distance) * (diff * 0.3), // Increased attraction force
+          x: (disX / distance) * (diff * 0.3),
           y: (disY / distance) * (diff * 0.3),
         };
-        node1.force.x += force.x; // Apply force to node1
+        node1.force.x += force.x;
         node1.force.y += force.y;
-        node2.force.x -= force.x; // Apply opposite force to node2
+        node2.force.x -= force.x;
         node2.force.y -= force.y;
       }
     });
+
     // Apply friction to the forces
     nodes.forEach((node) => {
       node.force.x *= friction;
@@ -181,7 +185,7 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
             highlightedNodes.current.add(otherNodeId);
           });
       },
-      leaveNode: (event) => {
+      leaveNode: (_event) => {
         hoveredNode.current = null; // Reset hovered node
         highlightedNodes.current.forEach((nodeId) => {
           const ogColor = sigma.getGraph().getNodeAttribute(nodeId, "color");

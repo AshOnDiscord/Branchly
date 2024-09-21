@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 // import { AuthProvider } from "@propelauth/nextjs/client";
 import "./globals.css";
 import SideBar from "@/components/NavBar";
-import Modal from "@/components/Modal";
 
 export const metadata: Metadata = {
   title: "Create Next App",

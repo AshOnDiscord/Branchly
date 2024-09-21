@@ -1,31 +1,51 @@
-const lessons: {
-  course: string; // Course name
-  lesson: string; // Lesson name
-  progress: number; // 0-1
-}[] = [
-  {
-    course: "Version Control",
-    lesson: "Introduction to Git",
-    progress: 0.75,
-  },
-  {
-    course: "Multivariable Calculus",
-    lesson: "Partial Derivatives",
-    progress: 0.25,
-  },
-  {
-    course: "Philosophy",
-    lesson: "Existentialism",
-    progress: 0.5,
-  },
-  {
-    course: "Notetaking",
-    lesson: "Cornell Method",
-    progress: 0.1,
-  },
-];
+import { NodeStatus, type NodeData } from "@/types/GraphTypes";
 
-export default function NextUp() {
+interface Lesson {
+  course: string;
+  lesson: string;
+  progress: number;
+}
+
+// const lessons: {
+//   course: string; // Course name
+//   lesson: string; // Lesson name
+//   progress: number; // 0-1
+// }[] = [
+//   {
+//     course: "Version Control",
+//     lesson: "Introduction to Git",
+//     progress: 0.75,
+//   },
+//   {
+//     course: "Multivariable Calculus",
+//     lesson: "Partial Derivatives",
+//     progress: 0.25,
+//   },
+//   {
+//     course: "Philosophy",
+//     lesson: "Existentialism",
+//     progress: 0.5,
+//   },
+//   {
+//     course: "Notetaking",
+//     lesson: "Cornell Method",
+//     progress: 0.1,
+//   },
+// ];
+
+export default function NextUp(props: { nodeData: NodeData[] }) {
+  const lessons: Lesson[] = props.nodeData
+    .filter((node) => {
+      return node.status === NodeStatus.IN_PROGRESS;
+    })
+    .map((node) => {
+      return {
+        course: `Course ${node.groupID}`,
+        lesson: node.displayName,
+        progress: node.progress,
+      };
+    });
+  console.log(lessons, "LESSONS");
   return (
     <div className="fixed bottom-8 right-8 flex w-64 flex-col gap-4 overflow-hidden rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <h1 className="font-semibold">Next Up</h1>

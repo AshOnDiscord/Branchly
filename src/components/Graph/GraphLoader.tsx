@@ -1,12 +1,12 @@
-import { NodeData, NodeId, NodeStatus } from "./nodes"; // Import the JSON file
 import { useLoadGraph } from "@react-sigma/core";
 import Graph from "graphology";
 import { useEffect } from "react";
-
-interface Edge {
-  source: NodeId;
-  target: NodeId;
-}
+import {
+  NodeStatus,
+  type Edge,
+  type NodeData,
+  type NodeId,
+} from "@/types/GraphTypes";
 
 const addEdge = (
   node: NodeId,
@@ -47,8 +47,15 @@ const LoadGraph = (props: { nodeData: NodeData[] }) => {
     const graph = new Graph();
     console.log(props);
 
+    const nodeMap = new Map<NodeId, NodeData>();
+    console.log(props.nodeData);
+    for (const node of props.nodeData) {
+      nodeMap.set(node.id, node);
+    }
+
     const addedNodes = new Set<NodeId>();
     const edges = addEdge(0, nodeMap, addedNodes);
+    console.log(edges);
     graph.import({
       nodes: props.nodeData.map((node) => ({
         key: node.id,
@@ -79,12 +86,7 @@ const LoadGraph = (props: { nodeData: NodeData[] }) => {
     });
 
     loadGraph(graph);
-  }, [loadGraph]);
-
-  const nodeMap = new Map<NodeId, NodeData>();
-  for (const node of props.nodeData) {
-    nodeMap.set(node.id, node);
-  }
+  }, [loadGraph, props.nodeData.length, props.nodeData]);
 
   return null;
 };

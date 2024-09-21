@@ -1,7 +1,15 @@
 // Modal.js
 import React from "react";
 
-const Modal = ({ isOpen, onClose, nodeData }) => {
+const Modal = ({
+  isOpen,
+  onClose,
+  nodeData,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  nodeData: any;
+}) => {
   if (!isOpen) return null;
 
   return (
