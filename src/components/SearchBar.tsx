@@ -19,7 +19,7 @@ const SearchBar = ({ onSearch }) => {
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Search YouTube..."
+        placeholder="Search..."
         style={{ width: "300px", padding: "10px" }}
       />
       <button type="submit" style={{ padding: "10px" }}>

@@ -5,7 +5,8 @@ import Sigma from "sigma";
 export default function GraphExporter() {
   const sigma = useSigma();
   const exportGraph = () => {
-    const { width, height } = sigma.getDimensions();
+    // const { width, height } = sigma.getDimensions();
+    const { width, height } = { width: 800, height: 600 };
     const pixelRatio = window.devicePixelRatio || 1;
 
     const tmpRoot = document.createElement("div");

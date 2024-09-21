@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="59.519 193.105 377.6139 113.897" xmlns="http://www.w3.org/2000/svg">
+  <ellipse style="fill: rgb(255, 255, 255);" cx="75.519" cy="209.105" rx="16" ry="16"/>
+  <ellipse style="fill: rgb(0, 0, 0); fill: rgb(255, 255, 255);" cx="173.032" cy="236.972" rx="16" ry="16"/>
+  <ellipse style="stroke: rgb(255, 255, 255); paint-order: fill; fill-rule: nonzero; fill: none; stroke-width: 5px;" cx="134.332" cy="275.197" rx="13.5" ry="13.5"/>
+  <line style="fill: rgb(216, 216, 216); stroke-width: 4px; stroke: rgb(255, 255, 255);" x1="76.737" y1="210.215" x2="126.555" y2="265.986"/>
+  <line style="fill: rgb(216, 216, 216); stroke-width: 4px; stroke: rgb(255, 255, 255);" x1="145.133" y1="264.734" x2="172.822" y2="237.346"/>
+  <ellipse style="fill: rgb(255, 255, 255);" cx="85.926" cy="263.938" rx="16" ry="16"/>
+  <ellipse style="stroke: rgb(255, 255, 255); paint-order: fill; fill-rule: nonzero; fill: none; stroke-width: 5px;" cx="124.951" cy="225.588" rx="13.5" ry="13.5"/>
+  <ellipse style="fill: rgb(0, 0, 0); fill: rgb(255, 255, 255);" cx="182.823" cy="291.002" rx="16" ry="16"/>
+  <line style="fill: rgb(216, 216, 216); stroke-width: 4px; stroke: rgb(255, 255, 255);" x1="85.886" y1="263.545" x2="115.182" y2="234.907"/>
+  <line style="fill: rgb(216, 216, 216); stroke-width: 4px; stroke: rgb(255, 255, 255);" x1="133.356" y1="234.992" x2="175.678" y2="283.09"/>
+  <text style="fill: rgb(255, 255, 255); font-family: 'Noto Sans'; font-size: 48.1467px; font-weight: 800; white-space: pre;" transform="matrix(1, 0, 0, 0.9554140567779541, -40.09125518798827, 47.73474884033203)" x="262.921" y="227.744">branchly</text>
+</svg>

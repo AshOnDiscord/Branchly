@@ -7,21 +7,29 @@ export enum NodeStatus {
   IN_PROGRESS,
   LOCKED,
 }
+export interface PartialNode {
+  nodeID: number;
+  displayName: string;
+  description: string;
+  children: number[];
+  parents: number[];
+}
 export interface NodeData {
   id: NodeId | string; // auto generate
   displayName: string;
+  description: string;
   x: number; // auto generate
   y: number; // auto generate
   size: number; // auto generate
   progress: number; // 0-1
   status: NodeStatus; // 0-2
-  groupID: GroupId;
+  groupID: GroupId | string;
   groupName: string;
-  children: NodeId[];
-  parents: NodeId[];
+  children: (NodeId | string)[];
+  parents: (NodeId | string)[];
 }
 
 export interface Edge {
-  source: NodeId;
-  target: NodeId;
+  source: NodeId | string;
+  target: NodeId | string;
 }

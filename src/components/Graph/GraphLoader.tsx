@@ -9,9 +9,9 @@ import {
 } from "@/types/GraphTypes";
 
 const addEdge = (
-  node: NodeId,
-  nodes: Map<NodeId, NodeData>,
-  addedNodes: Set<NodeId>,
+  node: NodeId | string,
+  nodes: Map<NodeId | string, NodeData>,
+  addedNodes: Set<NodeId | string>,
 ): Edge[] => {
   if (addedNodes.has(node)) {
     return [];
@@ -47,14 +47,15 @@ const LoadGraph = (props: { nodeData: NodeData[] }) => {
     const graph = new Graph();
     console.log(props);
 
-    const nodeMap = new Map<NodeId, NodeData>();
+    const nodeMap = new Map<NodeId | string, NodeData>();
     console.log(props.nodeData);
     for (const node of props.nodeData) {
       nodeMap.set(node.id, node);
     }
 
     const addedNodes = new Set<NodeId>();
-    const edges = addEdge(0, nodeMap, addedNodes);
+    let startingId = props.nodeData[0].id;
+    const edges = addEdge(startingId, nodeMap, addedNodes);
     console.log(edges);
     graph.import({
       nodes: props.nodeData.map((node) => ({
@@ -86,7 +87,7 @@ const LoadGraph = (props: { nodeData: NodeData[] }) => {
     });
 
     loadGraph(graph);
-  }, [loadGraph, props.nodeData.length, props.nodeData]);
+  }, [loadGraph, props.nodeData]);
 
   return null;
 };

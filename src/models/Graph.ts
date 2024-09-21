@@ -1,5 +1,5 @@
+import { NodeData, NodeId, NodeStatus } from "@/types/GraphTypes";
 import { ObjectId, Document, WithId } from "mongodb";
-import { NodeModel } from "./Node";
 
 type UserId = ObjectId;
 
@@ -10,5 +10,5 @@ export default interface Graph extends WithId<Document> {
   author: UserId;
   subscribers: UserId[];
   published: boolean;
-  nodes: NodeModel[];
+  nodes: (Omit<NodeData, "id"> & { _id: NodeId })[];
 }

@@ -29,15 +29,15 @@ export default function SideBar() {
   console.log(pathname);
 
   return (
-    <div className="bg-indigo-700">
-      <div className="sticky top-0 flex min-h-screen flex-1 flex-col">
+    <div className="bg-purple-800">
+      <div className="sticky top-0 flex min-h-screen min-w-48 flex-1 flex-col">
         <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-5">
           <div className="flex flex-shrink-0 items-center px-4">
             <Image
-              className="h-8 w-auto"
-              width={32}
-              height={32}
-              src="https://tailwindui.com/img/logos/workflow-logo-indigo-300-mark-white-text.svg"
+              className="h-12 w-auto pr-10"
+              width={64}
+              height={64}
+              src="/logos/branchly-export.svg"
               alt="skillink"
             />
           </div>
@@ -48,13 +48,13 @@ export default function SideBar() {
                 href={item.href}
                 className={classNames(
                   item.href === pathname
-                    ? "bg-indigo-800 text-white"
-                    : "text-indigo-100 hover:bg-indigo-600 hover:bg-opacity-75",
+                    ? "bg-purple-600 text-white"
+                    : "text-neutral-50 hover:bg-purple-500 hover:bg-opacity-75",
                   "group flex items-center rounded-md px-2 py-2 text-sm font-medium",
                 )}
               >
                 <item.icon
-                  className="mr-3 h-6 w-6 flex-shrink-0 text-indigo-300"
+                  className="mr-3 h-6 w-6 flex-shrink-0 text-purple-300"
                   aria-hidden="true"
                 />
                 <span className="flex-1">{item.name}</span>
@@ -62,7 +62,7 @@ export default function SideBar() {
             ))}
           </nav>
         </div>
-        <div className="flex flex-shrink-0 border-t border-indigo-800 p-4">
+        <div className="flex flex-shrink-0 border-t border-purple-500 p-4">
           <a href="#" className="group block w-full flex-shrink-0">
             <div className="flex items-center">
               <div>

@@ -7,9 +7,10 @@ import React from "react";
 import GraphEvents from "./GraphEvents";
 import GraphLoader from "./GraphLoader";
 import { createNodeBorderProgram } from "@sigma/node-border";
-import NodeDatas from "./data/nodes_copy";
 import NextUp from "@/components/NextUp";
 import GraphExporter from "./GraphExporter";
+import { NodeData } from "@/types/GraphTypes";
+import GraphSaver from "./GraphSaver";
 
 const sigmaStyles = {
   height: "100vh",
@@ -30,7 +31,11 @@ const sigmaSettings = {
   },
 };
 
-const NetworkGraph = (props: { showLessons: boolean }) => {
+const NetworkGraph = (props: {
+  showLessons: boolean;
+  data: NodeData[];
+  disabled: boolean;
+}) => {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -40,10 +45,11 @@ const NetworkGraph = (props: { showLessons: boolean }) => {
     <>
       {isClient ? (
         <SigmaContainer style={sigmaStyles} settings={sigmaSettings}>
-          <GraphEvents nodeData={NodeDatas} />
-          <GraphLoader nodeData={NodeDatas} />
+          {!props.disabled && <GraphEvents nodeData={props.data} />}
+          <GraphLoader nodeData={props.data} />
           <GraphExporter />
-          {props.showLessons && <NextUp nodeData={NodeDatas} />}
+          <GraphSaver nodeData={props.data} />
+          {props.showLessons && <NextUp nodeData={props.data} />}
         </SigmaContainer>
       ) : (
         <div></div>
