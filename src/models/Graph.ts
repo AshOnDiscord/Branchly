@@ -1,14 +1,15 @@
-import { NodeData, NodeId, NodeStatus } from "@/types/GraphTypes";
-import { ObjectId, Document, WithId } from "mongodb";
+import { NodeData } from "@/types/GraphTypes";
+import { Document } from "mongodb";
 
-type UserId = ObjectId;
+type UserId = string; // uuid v7
 
-export default interface Graph extends WithId<Document> {
-  _id: ObjectId;
+export default interface Graph extends Document {
+  _id: string;
   name: string;
   description: string;
   author: UserId;
   subscribers: UserId[];
   published: boolean;
-  nodes: (Omit<NodeData, "id"> & { _id: NodeId })[];
+  preview?: string; // link to the preview image
+  nodes: (NodeData & { _id: string })[];
 }

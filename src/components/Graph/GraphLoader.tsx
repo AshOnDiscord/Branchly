@@ -26,12 +26,16 @@ const addEdge = (
 };
 
 const nodeTypeData = {
+  [NodeStatus.ROOT]: {
+    color: "#ffffff",
+    borderColor: "#10b981",
+  },
   [NodeStatus.COMPLETED]: {
     color: "#6366f1",
     borderColor: "#6366f1",
   },
   [NodeStatus.IN_PROGRESS]: {
-    color: "white",
+    color: "#ffffff",
     borderColor: "#6366f1",
   },
   [NodeStatus.LOCKED]: {
@@ -48,15 +52,27 @@ const LoadGraph = (props: { nodeData: NodeData[] }) => {
     console.log(props);
 
     const nodeMap = new Map<NodeId | string, NodeData>();
-    console.log(props.nodeData);
     for (const node of props.nodeData) {
       nodeMap.set(node.id, node);
     }
 
     const addedNodes = new Set<NodeId>();
-    let startingId = props.nodeData[0].id;
-    const edges = addEdge(startingId, nodeMap, addedNodes);
-    console.log(edges);
+    let edges: Edge[] = [];
+    const roots = props.nodeData.filter(
+      (node) => node.status === NodeStatus.ROOT,
+    );
+    if (roots.length > 0) {
+      // console.log("WE HAVE ROOTS");
+      for (const root of roots) {
+        // console.log("ROOT", root, roots, nodeMap);
+        edges.push(...addEdge(root.id ?? root, nodeMap, addedNodes));
+      }
+    } else {
+      console.log("NO ROOTS");
+      if (props.nodeData.length > 0) {
+        edges.push(...addEdge(props.nodeData[0].id, nodeMap, addedNodes));
+      }
+    }
     graph.import({
       nodes: props.nodeData.map((node) => ({
         key: node.id,
@@ -66,12 +82,15 @@ const LoadGraph = (props: { nodeData: NodeData[] }) => {
           size: node.size,
           label: node.displayName,
           ogLabel: node.displayName,
+          description: node.description,
           type: "border",
           color: nodeTypeData[node.status].color,
           tempColor: nodeTypeData[node.status].color,
           borderColor: nodeTypeData[node.status].borderColor,
           tempBorderColor: nodeTypeData[node.status].borderColor,
           groupID: node.groupID,
+          progress: node.progress,
+          status: node.status,
         },
       })) as any,
       edges: edges.map((edge, i) => {

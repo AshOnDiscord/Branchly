@@ -1,8 +1,7 @@
-import { ObjectId } from "mongodb";
-
-export type NodeId = ObjectId;
-export type GroupId = ObjectId;
+export type NodeId = string;
+export type GroupId = string;
 export enum NodeStatus {
+  ROOT,
   COMPLETED,
   IN_PROGRESS,
   LOCKED,
@@ -15,7 +14,7 @@ export interface PartialNode {
   parents: number[];
 }
 export interface NodeData {
-  id: NodeId | string; // auto generate
+  id: NodeId; // auto generate
   displayName: string;
   description: string;
   x: number; // auto generate
@@ -23,10 +22,10 @@ export interface NodeData {
   size: number; // auto generate
   progress: number; // 0-1
   status: NodeStatus; // 0-2
-  groupID: GroupId | string;
+  groupID: GroupId;
   groupName: string;
-  children: (NodeId | string)[];
-  parents: (NodeId | string)[];
+  children: NodeId[];
+  parents: NodeId[];
 }
 
 export interface Edge {

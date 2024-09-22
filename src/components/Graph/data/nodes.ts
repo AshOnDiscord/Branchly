@@ -161,14 +161,13 @@ export const mapNode = (data: PartialNode[]): NodeData[] =>
       description: node.description,
       x: Math.random(),
       y: Math.random(),
-      size: 10 * (node.children.length + node.parents.length),
+      size:
+        3 +
+        3 *
+          (node.children.length + node.parents.length) *
+          (node.nodeID === 0 ? 2 : 1), // decrease (?)
       progress: Math.random(),
-      status:
-        Math.random() > 0.6
-          ? NodeStatus.COMPLETED
-          : Math.random() > 0.3
-            ? NodeStatus.IN_PROGRESS
-            : NodeStatus.LOCKED,
+      status: node.nodeID === 0 ? NodeStatus.ROOT : NodeStatus.LOCKED,
       groupID: `0`,
       groupName: "Group 0",
       children: node.children.map((child) => `${child}`),

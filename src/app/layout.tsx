@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-// import { AuthProvider } from "@propelauth/nextjs/client";
+import { AuthProvider } from "@propelauth/nextjs/client";
 import "./globals.css";
 import SideBar from "@/components/NavBar";
 
@@ -15,14 +15,14 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
-      {/* <AuthProvider authUrl={process.env.NEXT_PUBLIC_AUTH_URL!}> */}
-      <body>
-        <div className="grid min-h-screen grid-cols-[max-content,auto]">
-          <SideBar />
-          <main className="">{children}</main>
-        </div>
-      </body>
-      {/* </AuthProvider> */}
+      <AuthProvider authUrl={process.env.NEXT_PUBLIC_AUTH_URL!}>
+        <body>
+          <div className="gradient-background grid min-h-screen grid-cols-[max-content,auto]">
+            <SideBar />
+            <main className="">{children}</main>
+          </div>
+        </body>
+      </AuthProvider>
     </html>
   );
 }

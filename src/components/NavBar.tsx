@@ -4,9 +4,12 @@ import {
   BookOpenIcon,
   BookmarkIcon,
   PlusCircleIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
+import { useUser } from "@propelauth/nextjs/client";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { use } from "react";
 
 const navigation = [
   { name: "Home", icon: HomeIcon, href: "/" },
@@ -28,9 +31,11 @@ export default function SideBar() {
   const pathname = usePathname();
   console.log(pathname);
 
+  const user = useUser().user;
+
   return (
-    <div className="bg-purple-800">
-      <div className="sticky top-0 flex min-h-screen min-w-48 flex-1 flex-col">
+    <div className="bg-purple-600">
+      <div className="sticky top-0 flex min-h-screen min-w-64 flex-1 flex-col">
         <div className="flex flex-1 flex-col overflow-y-auto pb-4 pt-5">
           <div className="flex flex-shrink-0 items-center px-4">
             <Image
@@ -48,7 +53,7 @@ export default function SideBar() {
                 href={item.href}
                 className={classNames(
                   item.href === pathname
-                    ? "bg-purple-600 text-white"
+                    ? "bg-purple-700 text-white"
                     : "text-neutral-50 hover:bg-purple-500 hover:bg-opacity-75",
                   "group flex items-center rounded-md px-2 py-2 text-sm font-medium",
                 )}
@@ -66,16 +71,21 @@ export default function SideBar() {
           <a href="#" className="group block w-full flex-shrink-0">
             <div className="flex items-center">
               <div>
-                <Image
+                {/* <Image
                   className="inline-block h-9 w-9 rounded-full"
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
                   width={36}
                   height={36}
                   alt=""
-                />
+                /> */}
+                <div className="inline-block h-9 w-9 overflow-hidden rounded-full bg-purple-50">
+                  <UserIcon className="mt-1 h-9 w-9 rounded-full text-purple-900" />
+                </div>
               </div>
               <div className="ml-3">
-                <p className="text-sm font-medium text-white">Profile</p>
+                <p className="text-sm font-medium text-white">
+                  {user ? user.userId.slice(0, 7) : "loading"}
+                </p>
               </div>
             </div>
           </a>

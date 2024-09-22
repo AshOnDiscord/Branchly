@@ -2,13 +2,77 @@
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
 import { useEffect, useRef, useState } from "react";
 import Modal from "@/components/Modal";
-import { type NodeData } from "@/types/GraphTypes";
+import { NodeId, NodeStatus, type NodeData } from "@/types/GraphTypes";
+import { Sigma } from "sigma";
+import Graph from "graphology";
 
-const GraphEvents = (props: { nodeData: NodeData[] }) => {
+const updateColor = (node: NodeData, graph: Graph) => {
+  let color = "#ffffff";
+  let borderColor = "#ffffff";
+  switch (node.status) {
+    case NodeStatus.ROOT:
+      color = "#ffffff";
+      borderColor = "#10b981";
+      break;
+    case NodeStatus.COMPLETED:
+      color = "#6366f1";
+      borderColor = "#6366f1";
+      break;
+    case NodeStatus.IN_PROGRESS:
+      color = "#ffffff";
+      borderColor = "#6366f1";
+      break;
+    case NodeStatus.LOCKED:
+      color = "#64748b";
+      borderColor = "#64748b";
+      break;
+  }
+  graph.setNodeAttribute(node.id, "color", color);
+  graph.setNodeAttribute(node.id, "tempColor", color);
+  graph.setNodeAttribute(node.id, "borderColor", borderColor);
+  graph.setNodeAttribute(node.id, "tempBorderColor", borderColor);
+};
+
+const updateStatusRecursively = (
+  nodeId: NodeId,
+  nodes: Map<NodeId, NodeData>,
+  checkedNodes: Set<NodeId>,
+  graph: Graph,
+): void => {
+  if (checkedNodes.has(nodeId)) {
+    return;
+  }
+  checkedNodes.add(nodeId);
+  const node = nodes.get(nodeId)!;
+  if (node.status === NodeStatus.IN_PROGRESS && node.progress === 1) {
+    console.log("Completed", node.displayName);
+    node.status = NodeStatus.COMPLETED;
+    graph.setNodeAttribute(nodeId, "status", NodeStatus.COMPLETED);
+    updateColor(node, graph);
+  }
+  // completed, one padding of in progress, and locked
+  if (node.status !== NodeStatus.COMPLETED && node.status !== NodeStatus.ROOT) {
+    // console.log("NOW In progress", node.displayName);
+    node.status = NodeStatus.IN_PROGRESS; // end of the padding
+    graph.setNodeAttribute(nodeId, "status", NodeStatus.IN_PROGRESS);
+    updateColor(node, graph);
+    return;
+  }
+  for (const child of nodes.get(nodeId)!.children || []) {
+    updateStatusRecursively(child, nodes, checkedNodes, graph);
+  }
+};
+
+const GraphEvents = (props: {
+  nodeData: NodeData[];
+}) => {
   const registerEvents = useRegisterEvents();
   const sigma = useSigma();
   const [draggedNode, setDraggedNode] = useState<string | null>(null);
-  const [modalData, setModalData] = useState(null);
+  const [modalData, setModalData] = useState<{
+    label: string;
+    description: string;
+  } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const requestRef = useRef<number>();
   const highlightedNodes = useRef<Set<string>>(new Set());
@@ -16,12 +80,12 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
 
   const animate = (time: DOMHighResTimeStamp) => {
     const graph = sigma.getGraph();
-    const centerX = 1.25;
-    const centerY = 1.25;
-    const gravityConstant = 0.0004;
-    const baseForceConstant = 0.0001;
-    const maxDistance = 0.3;
-    const friction = 0.05;
+    const centerX = 1;
+    const centerY = 1;
+    const gravityConstant = 0.0001;
+    const forceConstant = 0.000025;
+    const maxDistance = 0.35;
+    const friction = 0; // Friction coefficient (0 < friction < 1)
 
     // Initialize node positions and forces
     const nodes = graph.nodes().map((nodeId) => ({
@@ -31,11 +95,9 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
         y: graph.getNodeAttribute(nodeId, "y"),
       },
       force: { x: 0, y: 0 },
-      connectionCount:
-        graph.neighbors(nodeId).length + graph.inNeighbors(nodeId).length, // Count connections
     }));
 
-    // Apply gravity to all nodes
+    // Apply gravity
     nodes.forEach((node) => {
       const forceX = (centerX - node.pos.x) * gravityConstant;
       const forceY = (centerY - node.pos.y) * gravityConstant;
@@ -56,16 +118,12 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
         const distance = Math.sqrt(distanceSquared);
 
         if (distance > 0) {
-          // Calculate a force magnitude that increases with the connection counts
-          const forceMagnitude =
-            (baseForceConstant / distanceSquared) *
-            (nodes[i].connectionCount + nodes[j].connectionCount); // Scale by connection counts
+          const forceMagnitude = forceConstant / distanceSquared;
           const force = {
             x: (dir.x / distance) * forceMagnitude,
             y: (dir.y / distance) * forceMagnitude,
           };
 
-          // Apply repulsion
           nodes[i].force.x -= force.x;
           nodes[i].force.y -= force.y;
           nodes[j].force.x += force.x;
@@ -88,8 +146,8 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
 
       if (diff > 0) {
         const force = {
-          x: (disX / distance) * (diff * 0.3),
-          y: (disY / distance) * (diff * 0.3),
+          x: (disX / distance) * (diff * 0.15),
+          y: (disY / distance) * (diff * 0.15),
         };
         node1.force.x += force.x;
         node1.force.y += force.y;
@@ -98,27 +156,44 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
       }
     });
 
-    // Apply friction to the forces
-    nodes.forEach((node) => {
-      node.force.x *= friction;
-      node.force.y *= friction;
-    });
-
-    // Update node positions based on the computed forces
+    // Update node positions based on the computed forces and apply friction
     nodes.forEach((node) => {
       const currentX = graph.getNodeAttribute(node.id, "x");
       const currentY = graph.getNodeAttribute(node.id, "y");
-      graph.setNodeAttribute(node.id, "x", currentX + node.force.x);
-      graph.setNodeAttribute(node.id, "y", currentY + node.force.y);
+
+      // Update position
+      const newX = currentX + node.force.x;
+      const newY = currentY + node.force.y;
+
+      // Apply friction to the force
+      node.force.x *= friction;
+      node.force.y *= friction;
+
+      // Set new position
+
+      graph.setNodeAttribute(node.id, "x", newX);
+      graph.setNodeAttribute(node.id, "y", newY);
     });
+
+    const nodeMap = new Map<NodeId | string, NodeData>();
+    for (const node of props.nodeData) {
+      nodeMap.set(node.id, node);
+    }
+    updateStatusRecursively(
+      "00000000-0000-0000-0000-000000000000",
+      nodeMap,
+      new Set(),
+      graph,
+    );
 
     requestRef.current = requestAnimationFrame(animate);
   };
 
   useEffect(() => {
+    requestRef.current ? cancelAnimationFrame(requestRef.current) : null;
     requestRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(requestRef.current!);
-  }, []); // Ensure this runs only once
+  }, [props.nodeData, props.nodeData.length]); // Ensure this runs only once
 
   useEffect(() => {
     // Register the events
@@ -148,8 +223,14 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
       doubleClickNode: (e) => {
         const nodeId = e.node;
         const nodeData = sigma.getGraph().getNodeAttributes(nodeId);
-        console.log("Node double-clicked:", nodeId, nodeData);
-        setModalData(nodeData as any);
+
+        if (nodeData.status === NodeStatus.LOCKED) return;
+
+        // Extract label and description from nodeData
+        const label = nodeData.label; // Adjust according to your nodeData structure
+        const description = nodeData.description; // Adjust according to your nodeData structure
+
+        setModalData({ label, description });
         setIsModalOpen(true);
       },
 
@@ -214,7 +295,14 @@ const GraphEvents = (props: { nodeData: NodeData[] }) => {
 
   return (
     <>
-      <Modal isOpen={isModalOpen} onClose={closeModal} nodeData={modalData} />
+      {modalData && (
+        <Modal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          label={modalData.label}
+          description={modalData.description}
+        />
+      )}
       {/* The rest of your component */}
     </>
   );
