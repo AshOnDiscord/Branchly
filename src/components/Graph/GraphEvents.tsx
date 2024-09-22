@@ -63,9 +63,7 @@ const updateStatusRecursively = (
   }
 };
 
-const GraphEvents = (props: {
-  nodeData: NodeData[];
-}) => {
+const GraphEvents = (props: { nodeData: NodeData[] }) => {
   const registerEvents = useRegisterEvents();
   const sigma = useSigma();
   const [draggedNode, setDraggedNode] = useState<string | null>(null);
