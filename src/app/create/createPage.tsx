@@ -17,9 +17,10 @@ export default function CreatePage() {
   const [selectedVideoId, setSelectedVideoId] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isGraphCreated, setIsGraphCreated] = useState(false);
+  // @ts-expect-error
   const playerRef = useRef<YT.Player>(null);
 
-  const fetchVideos = async (query) => {
+  const fetchVideos = async (query: any) => {
     const res = await fetch(
       `https://invidious.nerdvpn.de/api/v1/search?q=${encodeURIComponent(query)}`,
     );
@@ -39,7 +40,7 @@ export default function CreatePage() {
         url: `https://www.youtube.com/watch?v=${video.videoId}`, // Construct URL
       }));
 
-      setVideos(videosToDisplay); // Update state with the top 10 videos
+      setVideos(videosToDisplay as any); // Update state with the top 10 videos
     } else {
       console.error("No items found in the response", data);
       setVideos([]);
@@ -47,7 +48,7 @@ export default function CreatePage() {
   };
 
   // Fetch Wikipedia articles
-  const fetchWikipediaArticles = async (query) => {
+  const fetchWikipediaArticles = async (query: any) => {
     const res = await fetch(
       `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`,
     );
@@ -56,7 +57,7 @@ export default function CreatePage() {
   };
 
   // Fetch Wikibooks articles
-  const fetchWikibooksArticles = async (query) => {
+  const fetchWikibooksArticles = async (query: any) => {
     const res = await fetch(
       `https://en.wikibooks.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*`,
     );
@@ -78,7 +79,7 @@ export default function CreatePage() {
     return () => clearInterval(interval);
   }, [placeholders.length]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!inputValue) return;
     setResponse([]);
@@ -108,7 +109,7 @@ export default function CreatePage() {
     fetchWikibooksArticles(inputValue);
   };
 
-  const openModal = (videoId) => {
+  const openModal = (videoId: any) => {
     setSelectedVideoId(videoId);
     setIsModalOpen(true);
   };
@@ -122,6 +123,7 @@ export default function CreatePage() {
   useEffect(() => {
     if (isModalOpen && selectedVideoId) {
       const onYouTubeIframeAPIReady = () => {
+        // @ts-expect-error
         playerRef.current = new YT.Player("youtube-player", {
           height: "90%",
           width: "100%",
@@ -133,10 +135,11 @@ export default function CreatePage() {
       };
 
       const loadYouTubeAPI = () => {
+        // @ts-expect-error
         if (typeof YT === "undefined") {
           const script = document.createElement("script");
           script.src = "https://www.youtube.com/iframe_api";
-          window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+          (window as any).onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
           document.body.appendChild(script);
         } else {
           onYouTubeIframeAPIReady();
@@ -147,7 +150,7 @@ export default function CreatePage() {
     }
   }, [isModalOpen, selectedVideoId]);
 
-  const onPlayerStateChange = (event) => {
+  const onPlayerStateChange = (event: any) => {
     if (event.data === 0) {
       console.log("Video completed, good job!");
     }

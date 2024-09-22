@@ -1,6 +1,5 @@
-import { convertToCoreMessages, streamText } from "ai";
+import { streamText } from "ai";
 import { createOpenAI as createGroq } from "@ai-sdk/openai";
-import { writeFileSync } from "fs";
 
 const systemPrompt = `Pretend you are a teacher generating a gamified, "skill-tree"-like curriculum for learning. Your curriculum will be displayed in a graph diagram, with each node being a subtopic that the students will have to learn in order to gain more mastery about the overall topic that they are learning. A node would look like this:
 \`\`\`

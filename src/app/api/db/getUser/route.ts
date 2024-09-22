@@ -1,7 +1,7 @@
 import mongoClient from "@/app/api/db/mongo";
 import { NextResponse } from "next/server";
 
-export const GET = async (req: Request) => {
+export const GET = async () => {
   return new Response("GET request received");
 };
 

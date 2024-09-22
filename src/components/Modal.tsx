@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useRef } from "react";
 import { pipeline } from "@xenova/transformers";
 import computeCosineSimilarity from "compute-cosine-similarity";

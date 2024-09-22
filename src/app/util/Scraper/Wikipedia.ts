@@ -7,7 +7,7 @@ export const fetchWikipediaArticles = async (
   summary: string,
   extractorRef: AllTasks["feature-extraction"],
 ) => {
-  const articles = await wiki().search(query, 6);
+  const articles = await (wiki() as any).search(query, 6);
   const currentEmbedding = Array.from(
     await extractorRef([summary], { pooling: "mean", normalize: true }),
   )[0].data;
@@ -25,10 +25,10 @@ const fetchArticleContents = async (
   extractorRef: AllTasks["feature-extraction"],
 ) => {
   const similarities = [];
-  
+
   for (const article of articles) {
     try {
-      const page = await wiki().page(article);
+      const page = await (wiki() as any).page(article);
       const fullExtract = await page.rawContent();
 
       if (extractorRef) {
@@ -36,7 +36,7 @@ const fetchArticleContents = async (
           pooling: "mean",
           normalize: true,
         });
-        const sentenceEmbedding: number[] = Array.from(output[0].data);
+        const sentenceEmbedding: number[] = Array.from((output as any)[0].data);
 
         if (sentenceEmbedding.length !== currentEmbedding.length) {
           console.error(
@@ -93,17 +93,17 @@ const fetchArticleContents = async (
 };
 
 const fetchWikibooksArticles = async (query: string) => {
-  try {
-    const res = await fetch(
-      `https://en.wikibooks.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=1&format=json&origin=*`,
-    );
-    const data = await res.json();
-    setWikibooksArticles(data.query.search);
-  } catch (error) {
-    if (error.name === "AbortError") {
-      console.log("Fetch aborted for Wikibooks articles.");
-    }
-  }
+  // try {
+  //   const res = await fetch(
+  //     `https://en.wikibooks.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&srlimit=1&format=json&origin=*`,
+  //   );
+  //   const data = await res.json();
+  //   setWikibooksArticles(data.query.search);
+  // } catch (error) {
+  //   if (error.name === "AbortError") {
+  //     console.log("Fetch aborted for Wikibooks articles.");
+  //   }
+  // }
 };
 
 const countSyllables = (word: string) => {

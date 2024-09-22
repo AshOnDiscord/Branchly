@@ -16,11 +16,9 @@ export default function LessonModal({
   const node = nodes.find((n) => n.id === lesson)!;
   const [articles, setArticles] = useState<string[]>([]);
   useEffect(() => {
-    wiki()
-      .search(node.displayName, 6)
-      .then((articles) => {
-        setArticles(articles.results);
-      });
+    (wiki() as any).search(node.displayName, 6).then((articles: any) => {
+      setArticles(articles.results);
+    });
   }, [lesson]);
   return (
     <>

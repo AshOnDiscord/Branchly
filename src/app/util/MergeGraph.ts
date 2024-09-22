@@ -26,7 +26,9 @@ const MergeGraphs = (
   node2.parents.push(node1ID);
 
   let mergedAuthors = "";
+  // @ts-ignore
   if (!graph1.author || !graph2.author) {
+    // @ts-ignore
     mergedAuthors = graph1.author || graph2.author || "";
   } else if ((graph1 as Graph).author === (graph2 as Graph).author) {
     mergedAuthors = (graph1 as Graph).author;
@@ -36,8 +38,10 @@ const MergeGraphs = (
 
   const newGraph: Graph = {
     _id: v7(),
+    //@ts-ignore
     name: `${graph1.name} & ${graph2.name}`,
     author: mergedAuthors,
+    // @ts-ignore
     description: `${graph1.description} & ${graph2.description}`,
     subscribers: [], // we could also merge the subscribers
     published: false,

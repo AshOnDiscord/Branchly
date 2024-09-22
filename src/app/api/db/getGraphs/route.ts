@@ -1,12 +1,11 @@
-import { MongoClient } from "mongodb";
 import { NextResponse } from "next/server";
 import mongoClient from "@/app/api/db/mongo";
 
-export const POST = async (req: Request) => {
+export const POST = async () => {
   return new Response("POST request received");
 };
 
-export const GET = async (req: Request) => {
+export const GET = async () => {
   try {
     const database = mongoClient.db("skillLink");
     const collection = database.collection("graphs");
