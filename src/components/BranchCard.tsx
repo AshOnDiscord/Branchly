@@ -88,7 +88,7 @@ export default function BranchCard({
         <div className="flex">
           <h1 className="text line-clamp-1 font-semibold">{graph.name}</h1>
           <p className="whitespace-pre">{" by "}</p>
-          <h2>{graph.author.slice(0, 7)}</h2>{" "}
+          <h2>{graph.authorEmail}</h2>{" "}
           {/* make sure to later map to author name */}
         </div>
         <p className="line-clamp-2 text-sm text-slate-600">

@@ -26,6 +26,7 @@ export default function GraphSaver(props: { nodeData: NodeData[] }) {
       name,
       description,
       author,
+      authorEmail: user.email,
       subscribers: [],
       published: false,
       nodes: props.nodeData.map(

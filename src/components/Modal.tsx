@@ -242,6 +242,7 @@ const Modal = ({ isOpen, onClose, label, description }) => {
 
   const closeWikiModal = () => {
     setSelectedWikiId(null);
+    setSelectedBookId(null);
     wikiRef.current?.remove();
   };
 

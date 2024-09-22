@@ -14,7 +14,7 @@ const systemPrompt = `Pretend you are a teacher generating a gamified, "skill-tr
 \`\`\`
 nodeID will be a unique integer for every node that identifies it. A node must have at least one parent. A node can have several children and/or several parents. displayName is the name of the subtopic that the students need to learn. It should be, at most, a few words long. description is a short sentence that provides more information about the displayName. It should include information about the subtopic.
 Generate a skill tree for learning ONLY {prompt}, consisting of only the nodes. The FIRST node should have a nodeID of 0. Do NOT go beyond the scope of {prompt}).
-ENSURE THAT EVERY NODE HAS AT LEAST ONE CHILD AND AT LEAST ONE PARENT (except for the first and last nodes). Make AT LEAST 10 nodes and AT MOST 20 nodes. Ensure that the subtopics covered are a comprehensive summary of the overall topic. DO NOT WRITE ANY OTHER TEXT OTHER THAN THE LIST OF NODES. MAKE SURE THAT IF A NODE HAS PARENTS, THE PARENT ALSO LISTS THAT NODE AS A CHILD.`;
+ENSURE THAT EVERY NODE HAS AT LEAST ONE CHILD AND AT LEAST ONE PARENT (except for the first and last nodes). ENSURE THE NODES ARE ALL CONNNECTED. Make AT LEAST 10 nodes and AT MOST 20 nodes. Ensure that the subtopics covered are a comprehensive summary of the overall topic. DO NOT WRITE ANY OTHER TEXT OTHER THAN THE LIST OF NODES. MAKE SURE THAT IF A NODE HAS PARENTS, THE PARENT ALSO LISTS THAT NODE AS A CHILD.`;
 
 const groq = createGroq({
   baseURL: "https://api.groq.com/openai/v1",
