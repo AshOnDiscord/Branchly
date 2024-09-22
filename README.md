@@ -1,6 +1,6 @@
 # branchly
 
-# Technologies Used'
+# Technologies Used
 
 - Written in Typescript (https://www.typescriptlang.org/)
 
