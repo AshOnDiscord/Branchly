@@ -19,7 +19,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!user) return;
-    fetch("http://localhost:3000/api/db/getUser", {
+    fetch("https://branchly-b3xd.vercel.app//api/db/getUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

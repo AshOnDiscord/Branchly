@@ -20,7 +20,7 @@ export const POST = async (req: Request) => {
   console.log(user);
 
   if (!user) {
-    fetch("http://localhost:3000/api/db/setupUser", {
+    fetch("https://branchly-b3xd.vercel.app//api/db/setupUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

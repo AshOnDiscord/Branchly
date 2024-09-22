@@ -9,7 +9,7 @@ export default async function Discover() {
   const user = await getUserOrRedirect();
 
   const userData = await (
-    await fetch("http://localhost:3000/api/db/getUser", {
+    await fetch("https://branchly-b3xd.vercel.app//api/db/getUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

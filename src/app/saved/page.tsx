@@ -4,7 +4,9 @@ import { getUserOrRedirect } from "@propelauth/nextjs/server/app-router";
 
 export default async function Discover() {
   const graphs: Graph[] = await (
-    await fetch("http://localhost:3000/api/db/getGraphs", { cache: "no-store" })
+    await fetch("https://branchly-b3xd.vercel.app//api/db/getGraphs", {
+      cache: "no-store",
+    })
   ).json();
   // const publicGraphs = graphs;
 
@@ -16,7 +18,7 @@ export default async function Discover() {
   );
 
   const userData = await (
-    await fetch("http://localhost:3000/api/db/getUser", {
+    await fetch("https://branchly-b3xd.vercel.app//api/db/getUser", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -80,13 +80,16 @@ const ExportGraph = async (sigma: Sigma) => {
     // aTag.download = "graph.png";
     // aTag.click();
 
-    const req = await fetch("http://localhost:3000/api/db/uploadImage", {
-      method: "POST",
-      body: blob,
-      headers: {
-        "Content-Type": "application/json",
+    const req = await fetch(
+      "https://branchly-b3xd.vercel.app//api/db/uploadImage",
+      {
+        method: "POST",
+        body: blob,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
     URL.revokeObjectURL(url);
     const link = await req.text();
     return link;
